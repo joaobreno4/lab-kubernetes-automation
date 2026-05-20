@@ -1,0 +1,35 @@
+name: Kubernetes CI/CD Lab
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Inicializar Minikube (containerd)
+        uses: medyagh/setup-minikube@master
+        with:
+          cpus: 2
+          memory: 2048m
+          container_runtime: containerd
+
+      - name: Aplicar manifestos Kubernetes
+        run: |
+          kubectl create namespace lab-estudos --dry-run=client -o yaml | kubectl apply -f -
+          minikube addons enable metrics-server
+          kubectl apply -f 01-apache-deployment.yaml
+          kubectl apply -f 02-apache-hpa.yaml
+          kubectl rollout status deployment/meu-apache -n lab-estudos --timeout=120s
+
+      - name: Validar deploy
+        run: |
+          kubectl get deployment meu-apache -n lab-estudos
+          kubectl get hpa -n lab-estudos
