@@ -1,0 +1,19 @@
+# Minikube
+.minikube/
+
+# Lens IDE config (pode conter dados sensíveis)
+lens-config
+
+# Claude Code settings locais
+.claude/
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+*~
+
+# Secrets / kubeconfig local
+kubeconfig
+*.kubeconfig
+secrets/

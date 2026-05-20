@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meu-apache
+  namespace: lab-estudos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: meu-apache
+  template:
+    metadata:
+      labels:
+        app: meu-apache
+    spec:
+      containers:
+        - name: apache
+          image: httpd:2.4
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-service
+  namespace: lab-estudos
+spec:
+  type: ClusterIP
+  selector:
+    app: meu-apache
+  ports:
+    - port: 80
+      targetPort: 80
